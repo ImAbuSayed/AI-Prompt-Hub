@@ -10,6 +10,9 @@ const Nav = () => {
 
   const [ providers, setProviders ] = useState(null);
 
+  const [toggleFDopdown, setToggleFDopdown] = useState(false)
+
+
   useEffect(() => {
     const setProviders = async () => {
       const response = await getProviders();
@@ -54,10 +57,9 @@ const Nav = () => {
               />
             </Link>
           </div>
-        ):(
+        ): (
           <>
-            {providers && Object.values(providers).map(provider)
-            => (
+            {providers && Object.values(providers).map((provider) => (
               <button
                 type="button"
                 key={provider.name}
@@ -66,17 +68,69 @@ const Nav = () => {
               >
                 Sign In
               </button>
-            )}
+            ))}
           </>
         )}
       </div>
       
+      {/* Mobile Nav */}
       <div className="sm:hidden flex flex relative">
         {
           isUserLoggedIn ? (
             <div className="flex">
-              <button type="button"></button>
+              <Image 
+              src="/assets/images/logo.svg"
+              width={36}
+              height={36}
+              className="rounded-full"
+              alt="profile"
+              onClick={() => setToggleFDopdown ((prev) => !prev)}
+              />
+
+              { toggleFDopdown && (
+                <div className="dropdown">
+                  <Link 
+                    href="/profile"
+                    className="dropdown_link"
+                    onClink={() => setToggleFDopdown(false)}
+                  >
+                    My Profile
+                  </Link>
+                  <Link 
+                    href="/create-prompt"
+                    className="dropdown_link"
+                    onClink={() => setToggleFDopdown(false)}
+                  >
+                    Create Prompt
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setToggleFDopdown(false);
+                      signOut();
+                    }}
+                    className="mt-5 w-full black_btn"
+                  >
+                    Sing Out
+                  </button>
+                </div>
+              )
+
+              }
             </div>
+          ): (
+            <>
+            {providers && Object.values(providers).map((provider) => (
+              <button
+                type="button"
+                key={provider.name}
+                onClick={() => signIn(provider.id)}
+                className= 'black_btn'
+              >
+                Sign In
+              </button>
+            ))}
+          </>
           )
         }
       </div>
